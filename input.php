@@ -5,6 +5,7 @@
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="-1">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
 <form class="form" method="post">
@@ -21,8 +22,9 @@
     for($i = 0; $i < $items; $i++) {
         echo '<tr>';
             echo '<td>';
-            echo "<input id='cargo${i}' type='text' name='cargo${i}' placeholder='маса предмета ${i}'>";
-            echo "<input id='cost${i}' type='text' name='cost${i}' placeholder='вартість предмета ${i}'>";
+            echo "<label>Предмет №${i}</label>";
+            echo "<input id='cargo${i}' type='number' name='cargo${i}' placeholder='маса предмета ${i}'>";
+            echo "<input id='cost${i}' type='number' name='cost${i}' placeholder='вартість предмета ${i}'>";
             echo '</td>';
         echo '</tr>';
     }
@@ -40,29 +42,56 @@ $(document).ready(function () {
     var cargo_array = [];
     var cost_array = [];
     var item_array = [];
+    var specific_array = [];
+    var cost_array_var = [];
     var max_cost = 0;
     var cargo = 0;
     var cost = 0;
-    function getValue (){
-
+    function assign_value(){
+        for(var i = 0 ; i < items ;i++){
+            cost_array[i] = item_array[i][0];
+            cargo_array[i] = item_array[i][1];
+        }
+    }
+    function getValue(){
         for(var i = 0; i < items; i++){
-            item_array[i] = [$("#cost"+i).val(),$("#cargo"+i).val()];
+            item_array[i] = [$("#cargo"+i).val(),$("#cost"+i).val()];
         }
         return item_array;
     }
     $( ".submit" ).click(function() {
         item_array = getValue();
         item_array = item_array.sort(function(a,b) {
-            return b[0]-a[0];
+            return a[0]-b[0];
         });
-        while (cargo <= max_cargo){
-                max_cost = Math.max(cost,max_cost);
-                cargo += 21;
-                cost += 2;
-            console.log(max_cost)
+        for(var i = 0; i < items ; i++){
+            
+            specific_array[i] = 0;
+            cost_array_var[i] = 0;
+            var sub = 0;
+            var j = 0;
+            while (sub + item_array[i][0] <= max_cargo) {
+                item_array[i][0] = +item_array[i][0];
+                item_array[i][1] = +item_array[i][1];
+                sub = specific_array[i] = specific_array[i] + item_array[i][0];
+                cost_array_var[i] =cost_array_var[i] + item_array[i][1]
+            }
+            console.log(i);
         }
-        })
-});
+
+//        for(var i = 0; i < items ; i++){
+//            for(var j = 0; j < max_cargo ; j++){
+//                if(specific_array[j] < max_cargo){
+//                    specific_array[j] = Math.max(specific_array[j],item_array[j][0]);
+//                    console.log(specific_array[j]);
+//                }
+//                break
+//            }
+//        }
+        console.log(specific_array);
+        console.log(cost_array_var);
+    })
+    });
 
 
 
@@ -85,12 +114,6 @@ $(document).ready(function () {
 //            console.log(cargo_array);
 //            console.log(cost_array);
 //        }
-
-
-
-
-
-
 
 
 
